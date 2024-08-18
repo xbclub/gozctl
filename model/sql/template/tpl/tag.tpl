@@ -1,1 +1,1 @@
-`gorm:"column:{{.field}};type:{{.type}}{{if eq .field .data.Table.PrimaryKey.Field.Name.Source}};primary_key{{end}}{{if eq .field "deleted_at"}};index{{end}}"`
+`gorm:"column:{{.field}};type:{{.type}}{{if gt .length 0}}({{.length}}){{end}}{{if eq .field .data.Table.PrimaryKey.Field.Name.Source}};primary_key{{end}}{{if eq .field "deleted_at"}};index{{end}}{{if eq .isnull "NO"}};not null{{end}}"`

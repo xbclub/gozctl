@@ -1,7 +1,7 @@
 package {{.pkg}}
 {{if .withCache}}
 import (
-	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 	{{ if or (.gormCreatedAt) (.gormUpdatedAt) }} "time" {{ end }}
@@ -48,7 +48,7 @@ func (s *{{.upperStartCamelObject}}) BeforeUpdate(tx *gorm.DB) error {
 }
 {{ end }}
 // New{{.upperStartCamelObject}}Model returns a model for the database table.
-func New{{.upperStartCamelObject}}Model(conn *gorm.DB{{if .withCache}}, c cache.CacheConf{{end}}) {{.upperStartCamelObject}}Model {
+func New{{.upperStartCamelObject}}Model(conn *gorm.DB{{if .withCache}}, c *redis.Redis{{end}}) {{.upperStartCamelObject}}Model {
 	err := conn.AutoMigrate(&{{.upperStartCamelObject}}{})
     if err != nil {
         logx.Errorf("Init Database table %s failed: %v", {{.upperStartCamelObject}}{}.TableName(), err)

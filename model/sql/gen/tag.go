@@ -6,7 +6,7 @@ import (
 	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
 )
 
-func genTag(table Table, in string, columnType string) (string, error) {
+func genTag(table Table, in string, columnType, isNullAble string, length int64) (string, error) {
 	if in == "" {
 		return in, nil
 	}
@@ -17,9 +17,11 @@ func genTag(table Table, in string, columnType string) (string, error) {
 	}
 
 	output, err := util.With("tag").Parse(text).Execute(map[string]any{
-		"field": in,
-		"data":  table,
-		"type":  columnType,
+		"field":  in,
+		"data":   table,
+		"type":   columnType,
+		"isnull": isNullAble,
+		"length": length,
 	})
 	if err != nil {
 		return "", err

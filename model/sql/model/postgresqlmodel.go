@@ -24,13 +24,14 @@ type PostgreSqlModel struct {
 
 // PostgreColumn describes a column in table
 type PostgreColumn struct {
-	Num               sql.NullInt32  `db:"num"`
-	Field             sql.NullString `db:"field"`
-	Type              sql.NullString `db:"type"`
-	NotNull           sql.NullBool   `db:"not_null"`
-	Comment           sql.NullString `db:"comment"`
-	ColumnDefault     sql.NullString `db:"column_default"`
-	IdentityIncrement sql.NullInt32  `db:"identity_increment"`
+	Num                    sql.NullInt32  `db:"num"`
+	Field                  sql.NullString `db:"field"`
+	Type                   sql.NullString `db:"type"`
+	NotNull                sql.NullBool   `db:"not_null"`
+	Comment                sql.NullString `db:"comment"`
+	ColumnDefault          sql.NullString `db:"column_default"`
+	IdentityIncrement      sql.NullInt32  `db:"identity_increment"`
+	CharacterMaximumLength sql.NullInt64  `db:"character_maximum_length"`
 }
 
 // PostgreIndex describes an index for a column
@@ -64,7 +65,7 @@ func (m *PostgreSqlModel) GetAllTables(schema string) ([]string, error) {
 
 // FindColumns return columns in specified database and table
 func (m *PostgreSqlModel) FindColumns(schema, table string) (*ColumnData, error) {
-	querySql := `select t.num,t.field,t.type,t.not_null,t.comment, c.column_default, identity_increment
+	querySql := `select t.num,t.field,t.type,t.not_null,t.comment, c.column_default, identity_increment, c.character_maximum_length
 from (
          SELECT a.attnum AS num,
                 c.relname,
@@ -98,7 +99,6 @@ from (
 	if err != nil {
 		return nil, err
 	}
-
 	var columnData ColumnData
 	columnData.Db = schema
 	columnData.Table = table
@@ -139,13 +139,14 @@ func (m *PostgreSqlModel) getColumns(schema, table string, in []*PostgreColumn) 
 			for _, i := range index[e.Field.String] {
 				list = append(list, &Column{
 					DbColumn: &DbColumn{
-						Name:            e.Field.String,
-						DataType:        m.convertPostgreSqlTypeIntoMysqlType(e.Type.String),
-						Extra:           extra,
-						Comment:         e.Comment.String,
-						ColumnDefault:   dft,
-						IsNullAble:      isNullAble,
-						OrdinalPosition: int(e.Num.Int32),
+						Name:                   e.Field.String,
+						DataType:               m.convertPostgreSqlTypeIntoMysqlType(e.Type.String),
+						Extra:                  extra,
+						Comment:                e.Comment.String,
+						ColumnDefault:          dft,
+						IsNullAble:             isNullAble,
+						CharacterMaximumLength: e.CharacterMaximumLength.Int64,
+						OrdinalPosition:        int(e.Num.Int32),
 					},
 					Index: i,
 				})
@@ -153,13 +154,14 @@ func (m *PostgreSqlModel) getColumns(schema, table string, in []*PostgreColumn) 
 		} else {
 			list = append(list, &Column{
 				DbColumn: &DbColumn{
-					Name:            e.Field.String,
-					DataType:        m.convertPostgreSqlTypeIntoMysqlType(e.Type.String),
-					Extra:           extra,
-					Comment:         e.Comment.String,
-					ColumnDefault:   dft,
-					IsNullAble:      isNullAble,
-					OrdinalPosition: int(e.Num.Int32),
+					Name:                   e.Field.String,
+					DataType:               m.convertPostgreSqlTypeIntoMysqlType(e.Type.String),
+					Extra:                  extra,
+					Comment:                e.Comment.String,
+					ColumnDefault:          dft,
+					IsNullAble:             isNullAble,
+					CharacterMaximumLength: e.CharacterMaximumLength.Int64,
+					OrdinalPosition:        int(e.Num.Int32),
 				},
 			})
 		}

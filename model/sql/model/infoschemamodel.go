@@ -24,14 +24,15 @@ type (
 
 	// DbColumn defines column info of columns
 	DbColumn struct {
-		Name            string `db:"COLUMN_NAME"`
-		DataType        string `db:"DATA_TYPE"`
-		ColumnType      string `db:"COLUMN_TYPE"`
-		Extra           string `db:"EXTRA"`
-		Comment         string `db:"COLUMN_COMMENT"`
-		ColumnDefault   any    `db:"COLUMN_DEFAULT"`
-		IsNullAble      string `db:"IS_NULLABLE"`
-		OrdinalPosition int    `db:"ORDINAL_POSITION"`
+		Name                   string `db:"COLUMN_NAME"`
+		DataType               string `db:"DATA_TYPE"`
+		ColumnType             string `db:"COLUMN_TYPE"`
+		Extra                  string `db:"EXTRA"`
+		Comment                string `db:"COLUMN_COMMENT"`
+		ColumnDefault          any    `db:"COLUMN_DEFAULT"`
+		IsNullAble             string `db:"IS_NULLABLE"`
+		CharacterMaximumLength int64  `db:"character_maximum_length"`
+		OrdinalPosition        int    `db:"ORDINAL_POSITION"`
 	}
 
 	// DbIndex defines index of columns in information_schema.statistic
@@ -94,7 +95,6 @@ func (m *InformationSchemaModel) FindColumns(db, table string) (*ColumnData, err
 	if err != nil {
 		return nil, err
 	}
-
 	var list []*Column
 	for _, item := range reply {
 		index, err := m.FindIndex(db, table, item.Name)

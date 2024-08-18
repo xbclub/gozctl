@@ -36,15 +36,17 @@ type (
 
 	// Field describes a table field
 	Field struct {
-		NameOriginal    string
-		Name            stringx.String
-		ThirdPkg        string
-		DataType        string
-		ColumnType      string
-		Comment         string
-		SeqInIndex      int
-		OrdinalPosition int
-		ContainsPQ      bool
+		NameOriginal           string
+		Name                   stringx.String
+		ThirdPkg               string
+		DataType               string
+		ColumnType             string
+		IsNullAble             string
+		CharacterMaximumLength int64
+		Comment                string
+		SeqInIndex             int
+		OrdinalPosition        int
+		ContainsPQ             bool
 	}
 
 	// KeyType types alias of int
@@ -364,15 +366,17 @@ func getTableFields(table *model.Table, strict bool) (map[string]*Field, error) 
 			columnSeqInIndex = each.Index.SeqInIndex
 		}
 		field := &Field{
-			NameOriginal:    each.Name,
-			Name:            stringx.From(each.Name),
-			ThirdPkg:        thirdPkg,
-			DataType:        dt,
-			ColumnType:      each.DataType,
-			Comment:         each.Comment,
-			SeqInIndex:      columnSeqInIndex,
-			OrdinalPosition: each.OrdinalPosition,
-			ContainsPQ:      containsPQ,
+			NameOriginal:           each.Name,
+			Name:                   stringx.From(each.Name),
+			ThirdPkg:               thirdPkg,
+			DataType:               dt,
+			ColumnType:             each.DataType,
+			IsNullAble:             each.IsNullAble,
+			CharacterMaximumLength: each.CharacterMaximumLength,
+			Comment:                each.Comment,
+			SeqInIndex:             columnSeqInIndex,
+			OrdinalPosition:        each.OrdinalPosition,
+			ContainsPQ:             containsPQ,
 		}
 		fieldM[each.Name] = field
 	}
